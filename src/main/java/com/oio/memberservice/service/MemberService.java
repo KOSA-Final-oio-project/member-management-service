@@ -5,6 +5,7 @@ import com.oio.memberservice.jpa.MemberEntity;
 import com.oio.memberservice.jpa.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,8 +35,19 @@ public class MemberService {
         Optional<MemberEntity> result = memberRepository.findByEmail(email);
 
         if(result.isPresent()){
-            return "중복";
+            return "이미 가입된 이메일입니다.";
         }
-        return "사용가능";
+        return "사용가능한 이메일입니다.";
     }
+
+    public String emailDupChk(String nickname) {
+        Optional<MemberEntity> result = memberRepository.findByNickname(nickname);
+
+        if(result.isPresent()){
+            return "이미 사용중인 닉네임입니다.";
+        }
+        return "사용가능한 닉네임입니다.";
+    }
+
+
 }
