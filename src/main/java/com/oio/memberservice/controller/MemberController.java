@@ -1,9 +1,6 @@
 package com.oio.memberservice.controller;
 
-import com.oio.memberservice.dto.MemberRequestDto;
-import com.oio.memberservice.dto.MemberResponseDto;
-import com.oio.memberservice.dto.emailChkDto;
-import com.oio.memberservice.dto.nicknameDto;
+import com.oio.memberservice.dto.*;
 import com.oio.memberservice.service.MailService;
 import com.oio.memberservice.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +38,12 @@ public class MemberController {
         return member;
     }
 
+    @PutMapping("member/{memberNickname}")
+    public ResponseEntity<String> updateMember(@PathVariable String memberNickname, @RequestBody memberUpdateDto dto){
+        memberService.updateMember(memberNickname,dto);
+        return ResponseEntity.status(HttpStatus.OK).body("수정완료");
+    }
+
 
     @PostMapping("/email-chk")
     public String idDupChk(@RequestBody emailChkDto emailChkDto){
@@ -63,7 +66,7 @@ public class MemberController {
         String to = emailRequest.getEmail();
         String subject = "이메일 인증";
         String code = generateRandomCode();
-        String body = "인증 코드: " + code; // 랜덤한 코드 생성 로직을 추가해야 합니다.
+        String body = "인증 코드: " + code;
 
         result.put("code",code);
         emailService.sendEmail(to, subject, body);
@@ -71,7 +74,6 @@ public class MemberController {
     }
 
     private String generateRandomCode() {
-        // 랜덤 코드 생성 로직을 구현 (예: UUID 활용)
         return java.util.UUID.randomUUID().toString();
     }
 

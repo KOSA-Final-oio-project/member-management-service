@@ -45,14 +45,8 @@ public class MemberEntity {
     @Column
     private Date withdrawalDate;
 
-    @Column(nullable = false, unique = true)
-        private String encryptedPwd;
 
     public MemberEntity() {}
-
-    public void changeEncryptedPwd(String encryptedPwd) {
-        this.encryptedPwd = encryptedPwd;
-    }
 
     public void changeStatusToBasic() {
         this.status = MemberStatus.일반회원;

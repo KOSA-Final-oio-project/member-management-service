@@ -2,6 +2,7 @@ package com.oio.memberservice.service;
 
 import com.oio.memberservice.dto.MemberRequestDto;
 import com.oio.memberservice.dto.MemberResponseDto;
+import com.oio.memberservice.dto.memberUpdateDto;
 import com.oio.memberservice.jpa.MemberEntity;
 import com.oio.memberservice.jpa.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +25,9 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     public void createMember(MemberRequestDto memberRequestDto) throws UnsupportedEncodingException {
-        
+
         MemberEntity member = mapper.map(memberRequestDto, MemberEntity.class);
         member.setPassword(passwordEncoder.encode(memberRequestDto.getPassword()));
-        member.changeEncryptedPwd(passwordEncoder.encode((memberRequestDto.getPassword())));
         member.changeStatusToBasic();
         member.changeJoinDate(LocalDateTime.now());
 
@@ -37,7 +37,7 @@ public class MemberService {
     public String idDupChk(String email) {
         Optional<MemberEntity> result = memberRepository.findByEmail(email);
 
-        if(result.isPresent()){
+        if (result.isPresent()) {
             return "이미 가입된 이메일입니다.";
         }
         return "사용가능한 이메일입니다.";
@@ -46,7 +46,7 @@ public class MemberService {
     public String emailDupChk(String nickname) {
         Optional<MemberEntity> result = memberRepository.findByNickname(nickname);
 
-        if(result.isPresent()){
+        if (result.isPresent()) {
             return "이미 사용중인 닉네임입니다.";
         }
         return "사용가능한 닉네임입니다.";
@@ -54,14 +54,25 @@ public class MemberService {
 
 
     public MemberResponseDto getMember(String memberNickname) {
-        Optional<MemberEntity> resultByNickname = memberRepository.findByNickname(memberNickname);
-        
-        if(resultByNickname.isPresent()){
-            return mapper.map(resultByNickname.get(), MemberResponseDto.class);
-        }else{
-            throw new UsernameNotFoundException("요청하신 사용자를 찾을 수 없습니다.");
-        }
+        MemberEntity resultByNickname = memberRepository.findByNickname(memberNickname).orElseThrow(
+                () -> new UsernameNotFoundException("요청하신 사용자를 찾을 수 없습니다.")
+        );
+
+        return mapper.map(resultByNickname, MemberResponseDto.class);
 
 
+    }
+
+    public void updateMember(String memberNickname, memberUpdateDto dto) {
+        MemberEntity memberEntity = memberRepository.findByNickname(memberNickname).orElseThrow(
+                () -> new RuntimeException("수정할 회원이 없습니다.")
+        );
+
+        memberEntity.setPassword(passwordEncoder.encode(dto.getPassword()));
+        memberEntity.setName(dto.getName());
+        memberEntity.setEmail(dto.getEmail());
+        memberEntity.setPhoneNumber(dto.getPhoneNumber());
+        memberEntity.setProfile(dto.getProfile());
+        memberRepository.save(memberEntity);
     }
 }
