@@ -1,11 +1,13 @@
 package com.oio.memberservice.service;
 
 import com.oio.memberservice.dto.MemberRequestDto;
+import com.oio.memberservice.dto.MemberResponseDto;
 import com.oio.memberservice.jpa.MemberEntity;
 import com.oio.memberservice.jpa.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -51,4 +53,15 @@ public class MemberService {
     }
 
 
+    public MemberResponseDto getMember(String memberNickname) {
+        Optional<MemberEntity> resultByNickname = memberRepository.findByNickname(memberNickname);
+        
+        if(resultByNickname.isPresent()){
+            return mapper.map(resultByNickname.get(), MemberResponseDto.class);
+        }else{
+            throw new UsernameNotFoundException("요청하신 사용자를 찾을 수 없습니다.");
+        }
+
+
+    }
 }

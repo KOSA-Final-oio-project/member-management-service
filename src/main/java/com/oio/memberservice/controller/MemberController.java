@@ -1,6 +1,7 @@
 package com.oio.memberservice.controller;
 
 import com.oio.memberservice.dto.MemberRequestDto;
+import com.oio.memberservice.dto.MemberResponseDto;
 import com.oio.memberservice.dto.emailChkDto;
 import com.oio.memberservice.dto.nicknameDto;
 import com.oio.memberservice.service.MailService;
@@ -33,6 +34,13 @@ public class MemberController {
         }
             return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
+
+    @GetMapping("/member/{memberNickname}")
+    public MemberResponseDto showMember(@PathVariable String memberNickname){
+        MemberResponseDto member = memberService.getMember(memberNickname);
+        return member;
+    }
+
 
     @PostMapping("/email-chk")
     public String idDupChk(@RequestBody emailChkDto emailChkDto){
