@@ -24,7 +24,8 @@ public class MemberService {
     public void createMember(MemberRequestDto memberRequestDto) throws UnsupportedEncodingException {
         
         MemberEntity member = mapper.map(memberRequestDto, MemberEntity.class);
-        member.changeEncryptedPwd(passwordEncoder.encode(memberRequestDto.getPassword()));
+        member.setPassword(passwordEncoder.encode(memberRequestDto.getPassword()));
+        member.changeEncryptedPwd(passwordEncoder.encode((memberRequestDto.getPassword())));
         member.changeStatusToBasic();
         member.changeJoinDate(LocalDateTime.now());
 

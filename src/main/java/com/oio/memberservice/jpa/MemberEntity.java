@@ -10,8 +10,8 @@ import java.util.Date;
 
 
 @Getter
-@Entity
 @Setter
+@Entity
 @Table(name = "member")
 public class MemberEntity {
 

@@ -2,10 +2,13 @@ server:
   port: 0
 
 spring:
+  spring:
+    thymeleaf:
+      prefix= classpath:/templates/
   mail:
     host: smtp.naver.com
     port: 465
-    username: 
+    username:
     password:
     properties:
       mail:
@@ -27,7 +30,7 @@ spring:
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testdb
-#    username:sa
+
 
 eureka:
   instance:
@@ -41,3 +44,5 @@ eureka:
 logging:
   level:
     org_modelmapper: DEBUG
+
+

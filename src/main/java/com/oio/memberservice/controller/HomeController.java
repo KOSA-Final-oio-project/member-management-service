@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/member-service")
 @RestController
-public class ctrl {
+public class HomeController {
 
     @GetMapping("/member")
     String home() {
