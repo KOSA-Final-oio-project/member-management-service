@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.oio.memberservice.jpa.MemberEntity;
-import com.oio.memberservice.jpa.MemberRepository;
+import com.oio.memberservice.entity.MemberEntity;
+import com.oio.memberservice.repository.MemberRepository;
 import com.oio.memberservice.status.MemberRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

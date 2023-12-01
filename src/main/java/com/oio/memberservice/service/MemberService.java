@@ -3,11 +3,11 @@ package com.oio.memberservice.service;
 import com.oio.memberservice.dto.MemberRequestDto;
 import com.oio.memberservice.dto.MemberResponseDto;
 import com.oio.memberservice.dto.memberUpdateDto;
-import com.oio.memberservice.jpa.MemberEntity;
-import com.oio.memberservice.jpa.MemberRepository;
+import com.oio.memberservice.entity.MemberEntity;
+import com.oio.memberservice.repository.MemberRepository;
+import com.oio.memberservice.status.MemberStatus;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -93,6 +93,7 @@ public class MemberService {
         MemberEntity member = memberRepository.findByNickname(memberNickname).orElseThrow(
                 () ->  new UsernameNotFoundException("사용자를 찾을 수 없습니다.")
         );
-        memberRepository.delete(member);
+        member.setStatus(MemberStatus.탈퇴회원);
+        memberRepository.save(member);
     }
 }

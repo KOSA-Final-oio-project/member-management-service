@@ -1,5 +1,6 @@
-package com.oio.memberservice.jpa;
+package com.oio.memberservice.repository;
 
+import com.oio.memberservice.entity.MemberEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

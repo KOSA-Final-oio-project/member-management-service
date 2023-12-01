@@ -1,4 +1,4 @@
-package com.oio.memberservice.jpa;
+package com.oio.memberservice.entity;
 
 import com.oio.memberservice.status.MemberStatus;
 import lombok.Getter;
