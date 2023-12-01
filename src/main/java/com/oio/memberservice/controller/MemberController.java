@@ -44,6 +44,12 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body("수정완료");
     }
 
+    @DeleteMapping("member/{memberNickname}")
+    public ResponseEntity<String> deleteMember(@PathVariable String memberNickname){
+        memberService.deleteMemberByNickname(memberNickname);
+        return ResponseEntity.status(HttpStatus.OK).body("삭제완료");
+    }
+
 
     @PostMapping("/email-chk")
     public String idDupChk(@RequestBody emailChkDto emailChkDto){

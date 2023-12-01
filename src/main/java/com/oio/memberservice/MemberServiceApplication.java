@@ -10,12 +10,14 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Properties;
 
 @SpringBootApplication
 @EnableDiscoveryClient
+@EnableScheduling
 public class MemberServiceApplication {
 
 	public static void main(String[] args) {

@@ -8,12 +8,14 @@ import com.oio.memberservice.jpa.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -74,5 +76,23 @@ public class MemberService {
         memberEntity.setPhoneNumber(dto.getPhoneNumber());
         memberEntity.setProfile(dto.getProfile());
         memberRepository.save(memberEntity);
+    }
+
+    @Scheduled(fixedRate = 60000)
+    public void deleteMemberByTime(){
+        List<MemberEntity> members = memberRepository.findAll();
+
+        for (MemberEntity member : members){
+            if(member.getStatus().equals("탈퇴회원")){
+                memberRepository.delete(member);
+            }
+        }
+    }
+
+    public void deleteMemberByNickname(String memberNickname) {
+        MemberEntity member = memberRepository.findByNickname(memberNickname).orElseThrow(
+                () ->  new UsernameNotFoundException("사용자를 찾을 수 없습니다.")
+        );
+        memberRepository.delete(member);
     }
 }
