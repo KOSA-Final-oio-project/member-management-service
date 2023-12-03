@@ -2,34 +2,34 @@ server:
   port: 8888
 
 spring:
-  spring:
-    thymeleaf:
-      prefix= classpath:/templates/
-  mail:
-    host: smtp.naver.com
-    port: 465
-    username:
-    password:
-    properties:
-      mail:
-        smtp:
-          starttls:
-            enable: true
-      mail.smtp.auth: true
-      mail.smtp.ssl.enable: true
-      mail.smtp.ssl.trust: smtp.naver.com
-  application:
-    name: member-service
-
-  h2:
-    console:
-      enabled: true
-      settings:
-        web-allow-others: true
-      path: /h2-console
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb
+    url: jdbc:mysql://localhost:3306/oio
+    username: root
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: create
+
+  thymeleaf:
+    prefix: classpath:/templates/
+
+  application:
+     name: member-service
+
+#  h2:
+#    console:
+#      enabled: true
+#      settings:
+#        web-allow-others: true
+#      path: /h2-console
+#  datasource:
+#    driver-class-name: org.h2.Driver
+#    url: jdbc:h2:mem:testdb
 
 
 eureka:
@@ -41,7 +41,8 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka
 
-logging:
-  level:
-    org_modelmapper: DEBUG
 
+
+token:
+  expiration_time: 86400000
+  secret: 

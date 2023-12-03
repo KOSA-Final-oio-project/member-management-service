@@ -37,9 +37,8 @@ public class MemberServiceApplication {
 	@Bean
 	public JavaMailSender javaMailSender() {
 		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-		mailSender.setHost("smtp.naver.com");
-		mailSender.setPort(465);  // 메일 서버의 포트 설정
-		mailSender.setUsername("");
+		mailSender.setHost("smtp.gmail.com");
+		mailSender.setUsername("jhongsig2@gmail.com");
 		mailSender.setPassword("");
 
 		Properties props = mailSender.getJavaMailProperties();
