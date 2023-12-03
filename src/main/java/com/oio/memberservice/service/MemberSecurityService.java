@@ -1,5 +1,6 @@
 package com.oio.memberservice.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -7,21 +8,29 @@ import java.util.Optional;
 import com.oio.memberservice.entity.MemberEntity;
 import com.oio.memberservice.repository.MemberRepository;
 import com.oio.memberservice.status.MemberRole;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @RequiredArgsConstructor
 @Service
 public class MemberSecurityService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -38,4 +47,5 @@ public class MemberSecurityService implements UserDetailsService {
         }
         return new User(siteUser.getNickname(), siteUser.getPassword(), authorities);
     }
+
 }

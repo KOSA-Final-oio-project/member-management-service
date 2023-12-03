@@ -94,6 +94,6 @@ public class MemberService {
                 () ->  new UsernameNotFoundException("사용자를 찾을 수 없습니다.")
         );
         member.setStatus(MemberStatus.탈퇴회원);
-        memberRepository.save(member);
+        memberRepository.delete(member);
     }
 }
