@@ -65,6 +65,18 @@ public class MemberController {
         return result;
     }
 
+    @PostMapping("/member/{memberEmail}")
+    public Map<String,String> findPassword(@PathVariable String memberEmail ,@RequestBody emailChkDto dto){
+        Map result = new HashMap();
+        // 이메일 전송 로직
+        String to = dto.getEmail();
+        String subject = "임시 비밀번호";
+
+        String code = emailService.findPassword(to, subject);
+        result.put("code",code);
+        return result;
+    }
+
     @PostMapping("/send-email")
     public Map<String ,String> sendEmail(@RequestBody emailChkDto emailRequest) {
         Map result = new HashMap();

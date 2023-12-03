@@ -96,4 +96,15 @@ public class MemberService {
         member.setStatus(MemberStatus.탈퇴회원);
         memberRepository.delete(member);
     }
+
+
+    public void resetPassword(String memberEmail, String password) {
+        MemberEntity member = memberRepository.findByEmail(memberEmail).orElseThrow(
+                () -> new UsernameNotFoundException("사용자를 찾을 수 없습니다.")
+        );
+
+        System.out.println(memberEmail);
+        member.setPassword(passwordEncoder.encode(password));
+        memberRepository.save(member);
+    }
 }

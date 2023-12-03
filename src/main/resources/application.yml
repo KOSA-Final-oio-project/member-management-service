@@ -45,4 +45,4 @@ eureka:
 
 token:
   expiration_time: 86400000
-  secret: 
+  secret:
