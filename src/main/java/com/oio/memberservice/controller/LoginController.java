@@ -1,24 +1,30 @@
 package com.oio.memberservice.controller;
 
+import com.oio.memberservice.dto.LoginDto;
+import com.oio.memberservice.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
-@Controller
+@RestController
 @RequestMapping("/member-service")
 @RequiredArgsConstructor
 public class LoginController {
-
+    private final AuthenticationService authenticationService;
 
     @GetMapping("/login")
+    @ResponseBody
     public String loginPage(){
         return "home";
     }
 
+
+    @PostMapping("/login")
+    public String login(@RequestBody LoginDto dto){
+        String token = authenticationService.login(dto);
+        return token;
+    }
 
 
 }

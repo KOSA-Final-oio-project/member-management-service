@@ -6,9 +6,14 @@ import com.oio.memberservice.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +23,8 @@ import java.util.Map;
 public class MemberController {
     private final MemberService memberService;
     private final MailService emailService;
+
+
 
     @PostMapping("/signup")
     public ResponseEntity<Map<String,String>> signUp(@RequestBody MemberRequestDto memberRequestDto){
