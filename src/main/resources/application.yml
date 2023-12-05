@@ -48,3 +48,15 @@ security:
     token:
       secret-key:
       expire-length: 8640000
+
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: oio-bucket
+    stack:
+      auto: false
+    credentials:
+      secret-key:
+      access-key:

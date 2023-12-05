@@ -5,6 +5,7 @@ import com.oio.memberservice.dto.MemberResponseDto;
 import com.oio.memberservice.dto.memberUpdateDto;
 import com.oio.memberservice.entity.MemberEntity;
 import com.oio.memberservice.repository.MemberRepository;
+import com.oio.memberservice.s3.S3Service;
 import com.oio.memberservice.status.MemberStatus;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -12,7 +13,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,10 +29,14 @@ public class MemberService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
 
-    public void createMember(MemberRequestDto memberRequestDto) throws UnsupportedEncodingException {
+    private final S3Service s3Service;
+
+    public void createMember(MemberRequestDto memberRequestDto, MultipartFile file) throws IOException {
 
         MemberEntity member = mapper.map(memberRequestDto, MemberEntity.class);
         member.setPassword(passwordEncoder.encode(memberRequestDto.getPassword()));
+        String imgUrl = s3Service.upload(file);
+        member.setProfile(imgUrl);
         member.changeStatusToBasic();
         member.changeJoinDate(LocalDateTime.now());
 

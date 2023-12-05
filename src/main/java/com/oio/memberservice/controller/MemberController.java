@@ -10,8 +10,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.HashMap;
@@ -27,16 +29,19 @@ public class MemberController {
 
 
     @PostMapping("/signup")
-    public ResponseEntity<Map<String,String>> signUp(@RequestBody MemberRequestDto memberRequestDto){
+    public ResponseEntity<Map<String,String>> signUp(@RequestPart("memberRequestDto") MemberRequestDto memberRequestDto,
+                                                     @RequestPart("file") MultipartFile file){
         Map result = new HashMap();
         try {
-            memberService.createMember(memberRequestDto);
+            memberService.createMember(memberRequestDto,file);
             result.put("status","success");
         }catch (UnsupportedEncodingException e){
             result.put("status","error");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-            return ResponseEntity.status(HttpStatus.CREATED).body(result);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     @GetMapping("/member/{memberNickname}")
