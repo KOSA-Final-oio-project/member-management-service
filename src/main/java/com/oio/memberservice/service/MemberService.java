@@ -1,12 +1,16 @@
 package com.oio.memberservice.service;
 
-import com.oio.memberservice.dto.MemberRequestDto;
-import com.oio.memberservice.dto.MemberResponseDto;
-import com.oio.memberservice.dto.memberUpdateDto;
+import com.oio.memberservice.dto.*;
 import com.oio.memberservice.entity.MemberEntity;
+import com.oio.memberservice.entity.RefreshTokenEntity;
 import com.oio.memberservice.repository.MemberRepository;
+import com.oio.memberservice.repository.RefreshTokenRepository;
 import com.oio.memberservice.s3.S3Service;
+import com.oio.memberservice.security.JwtTokenProvider;
 import com.oio.memberservice.status.MemberStatus;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,8 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -27,20 +30,39 @@ public class MemberService {
 
     private final ModelMapper mapper;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final MemberRepository memberRepository;
 
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
     private final S3Service s3Service;
 
     public void createMember(MemberRequestDto memberRequestDto, MultipartFile file) throws IOException {
 
         MemberEntity member = mapper.map(memberRequestDto, MemberEntity.class);
-        member.setPassword(passwordEncoder.encode(memberRequestDto.getPassword()));
+        member.changePassword(passwordEncoder.encode(memberRequestDto.getPassword()));
         String imgUrl = s3Service.upload(file);
-        member.setProfile(imgUrl);
+        member.changeProfile(imgUrl);
         member.changeStatusToBasic();
         member.changeJoinDate(LocalDateTime.now());
 
         memberRepository.save(member);
+    }
+
+    public Token login(LoginDto loginDto){
+        Optional<MemberEntity> findMember = memberRepository.findByEmail(loginDto.getEmail());
+
+        if(!(findMember.isPresent()) ||
+                !(passwordEncoder.matches(loginDto.getPassword(), findMember.get().getPassword()))){
+            Token token = new Token();
+            token.setAccessToken("fail");
+            token.setRefreshToken("fail");
+            return token;
+        }
+
+        MemberEntity member = findMember.get();
+        LoginDto dto = mapper.map(member, LoginDto.class);
+        Token token = jwtTokenProvider.generateToken(dto);
+        return token;
     }
 
     public String idDupChk(String email) {
@@ -72,16 +94,17 @@ public class MemberService {
 
     }
 
-    public void updateMember(String memberNickname, memberUpdateDto dto) {
+    public void updateMember(String memberNickname, memberUpdateDto memberUpdateDto) {
         MemberEntity memberEntity = memberRepository.findByNickname(memberNickname).orElseThrow(
-                () -> new RuntimeException("수정할 회원이 없습니다.")
+                () -> new UsernameNotFoundException("수정할 회원이 없습니다.")
         );
-
-        memberEntity.setPassword(passwordEncoder.encode(dto.getPassword()));
-        memberEntity.setName(dto.getName());
-        memberEntity.setEmail(dto.getEmail());
-        memberEntity.setPhoneNumber(dto.getPhoneNumber());
-        memberEntity.setProfile(dto.getProfile());
+        MemberEntity member = mapper.map(memberUpdateDto, MemberEntity.class);
+        memberEntity.changePassword(passwordEncoder.encode(memberUpdateDto.getPassword()));
+//        memberEntity.setName(dto.getName());
+//        memberEntity.setNickname(dto.getNickname());
+//        memberEntity.setEmail(dto.getEmail());
+//        memberEntity.setPhoneNumber(dto.getPhoneNumber());
+//        memberEntity.setProfile(dto.getProfile());
         memberRepository.save(memberEntity);
     }
 
@@ -100,8 +123,8 @@ public class MemberService {
         MemberEntity member = memberRepository.findByNickname(memberNickname).orElseThrow(
                 () ->  new UsernameNotFoundException("사용자를 찾을 수 없습니다.")
         );
-        member.setStatus(MemberStatus.탈퇴회원);
-        memberRepository.delete(member);
+        member.changeStatusToWithdrawal();
+        memberRepository.save(member);
     }
 
 
@@ -110,8 +133,22 @@ public class MemberService {
                 () -> new UsernameNotFoundException("사용자를 찾을 수 없습니다.")
         );
 
-        System.out.println(memberEmail);
-        member.setPassword(passwordEncoder.encode(password));
+        member.changePassword(passwordEncoder.encode(password));
         memberRepository.save(member);
+    }
+
+    public Map<String,Object> validateRefreshToken(String token,LoginDto dto) {
+        Map result = new HashMap();
+        Optional<RefreshTokenEntity> refreshToken = refreshTokenRepository.findByUsername(dto.getEmail());
+        if(!(refreshToken.isPresent())){
+            result.put("result","fail");
+            return result;
+        }
+        refreshTokenRepository.delete(refreshToken.get());
+
+        Token newToken = jwtTokenProvider.generateToken(dto);
+        result.put("result",newToken);
+        return result;
+
     }
 }

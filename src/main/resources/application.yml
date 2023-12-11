@@ -46,8 +46,9 @@ eureka:
 security:
   jwt:
     token:
-      secret-key:
+      access-key: example_token
       expire-length: 8640000
+      refresh-key: example_token
 
 cloud:
   aws:

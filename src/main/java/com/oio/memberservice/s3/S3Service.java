@@ -20,10 +20,10 @@ import java.io.IOException;
 public class S3Service {
     private AmazonS3 s3Client;
     /*lombok 패키지가 아닌, org.springframework.beans.factory.annotation 패키지임에 유의*/
-    @Value("")
+    @Value("${cloud.aws.credentials.access-key}")
     private String accessKey;
 
-    @Value("")
+    @Value("${cloud.aws.credentials.secret-key}")
     private String secretKey;
 
     @Value("oio-bucket")

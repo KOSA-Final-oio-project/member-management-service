@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -11,6 +13,7 @@ import javax.persistence.*;
 public class ReportEntity {
 
     @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "REPORT_ID")
     private Long id;
 
     @ManyToOne
@@ -23,9 +26,7 @@ public class ReportEntity {
 
     private String content;
 
-    private String photo1;
-
-    private String photo2;
-    private String photo3;
+    @OneToMany(mappedBy = "report")
+    private List<ReportPhoto> photos = new ArrayList<>();
 
 }

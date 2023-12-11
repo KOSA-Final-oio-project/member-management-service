@@ -13,8 +13,5 @@ public class ReportDto {
     private String content;
     private String reporterNickname;
     private String reportedNickname;
-    private String photo1;
-    private String photo2;
-    private String photo3;
 
 }

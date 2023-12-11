@@ -10,8 +10,8 @@ import java.util.Date;
 
 
 @Getter
-@Setter
 @Entity
+@Setter
 @Table(name = "member")
 public class MemberEntity {
 
@@ -45,14 +45,21 @@ public class MemberEntity {
     @Column
     private Date withdrawalDate;
 
-
-    public MemberEntity() {}
-
     public void changeStatusToBasic() {
         this.status = MemberStatus.일반회원;
+    }
+    public void changeStatusToWithdrawal() {
+        this.status = MemberStatus.탈퇴회원;
     }
 
     public void changeJoinDate(LocalDateTime now) {
         this.joinDate = now;
+    }
+
+    public void changePassword(String password){
+        this.password = password;
+    }
+    public void changeProfile(String profile){
+        this.profile = profile;
     }
 }

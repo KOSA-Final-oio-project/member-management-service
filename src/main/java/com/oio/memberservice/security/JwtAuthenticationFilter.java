@@ -27,9 +27,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String header = request.getHeader("token");
         if (header != null && header.startsWith("Bearer ")) {
             try {
+                System.out.println(header);
                 String token = header.substring(7); // "Bearer " 이후의 토큰 부분 추출
                 Jws<Claims> claimsJws = Jwts.parser()
-                        .setSigningKey("")
+                        .setSigningKey("user_token")
                         .parseClaimsJws(token);
 
                 Claims claims = claimsJws.getBody();
