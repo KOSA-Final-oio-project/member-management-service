@@ -40,7 +40,7 @@ public class JwtTokenProvider {
 
         // 이 부분에서 User의 nickname을 토큰에 포함시킬 수 있습니다.
         String accessToken =  Jwts.builder()
-                .setSubject(dto.getEmail())
+                .setSubject(dto.getNickname())
                 .claim("nickname", dto.getNickname()) // nickname 추가
                 .setIssuedAt(now)
                 .setExpiration(validity)
@@ -48,7 +48,7 @@ public class JwtTokenProvider {
                 .compact();
 
         String refreshToken =  Jwts.builder()
-                .setSubject(dto.getEmail())
+                .setSubject(dto.getNickname())
                 .claim("nickname", dto.getNickname()) // nickname 추가
                 .setIssuedAt(now)
                 .setExpiration(validity)
@@ -56,7 +56,7 @@ public class JwtTokenProvider {
                 .compact();
 
         RefreshTokenEntity entity = RefreshTokenEntity.builder()
-                .username(dto.getEmail())
+                .username(dto.getNickname())
                 .refreshToken(refreshToken).build();
         refreshTokenRepository.save(entity);
 

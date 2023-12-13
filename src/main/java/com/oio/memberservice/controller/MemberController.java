@@ -68,14 +68,16 @@ public class MemberController {
 
 
     //회원 정보 수정
-    @PutMapping("/{memberNickname}")
-    public Map<String,String> updateMember(@PathVariable String memberNickname, @RequestBody memberUpdateDto dto){
+    @PutMapping(value = "/{memberNickname}",consumes = "multipart/form-data")
+    public Map<String,String> updateMember(@PathVariable String memberNickname,memberUpdateDto dto,MultipartFile file){
         Map result = new HashMap();
         try {
-            memberService.updateMember(memberNickname, dto);
+            memberService.updateMember(memberNickname, dto,file);
             result.put("result", "success");
         }catch (UsernameNotFoundException e){
-            result.put("result","fail");
+            result.put("result","fail") ;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return result;
     }

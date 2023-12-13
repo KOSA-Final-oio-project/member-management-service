@@ -94,17 +94,19 @@ public class MemberService {
 
     }
 
-    public void updateMember(String memberNickname, memberUpdateDto memberUpdateDto) {
+    public void updateMember(String memberNickname, memberUpdateDto dto,MultipartFile file) throws IOException {
         MemberEntity memberEntity = memberRepository.findByNickname(memberNickname).orElseThrow(
                 () -> new UsernameNotFoundException("수정할 회원이 없습니다.")
         );
-        MemberEntity member = mapper.map(memberUpdateDto, MemberEntity.class);
-        memberEntity.changePassword(passwordEncoder.encode(memberUpdateDto.getPassword()));
-//        memberEntity.setName(dto.getName());
-//        memberEntity.setNickname(dto.getNickname());
-//        memberEntity.setEmail(dto.getEmail());
-//        memberEntity.setPhoneNumber(dto.getPhoneNumber());
-//        memberEntity.setProfile(dto.getProfile());
+        memberEntity.changePassword(passwordEncoder.encode(dto.getPassword()));
+        String imgUrl = s3Service.upload(file);
+        System.out.println(imgUrl);
+        memberEntity.changeProfile(imgUrl);
+        memberEntity.setName(dto.getName());
+        memberEntity.setNickname(dto.getNickname());
+        memberEntity.setEmail(dto.getEmail());
+        memberEntity.setPhoneNumber(dto.getPhoneNumber());
+        memberEntity.setProfile(dto.getProfile());
         memberRepository.save(memberEntity);
     }
 

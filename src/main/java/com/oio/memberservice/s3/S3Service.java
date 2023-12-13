@@ -56,6 +56,7 @@ public class S3Service {
                 .withCannedAcl(CannedAccessControlList.PublicRead));
         //업로드를 한 후, 해당 URL을 DB에 저장할 수 있도록 컨트롤러로 URL을 반환
         return s3Client.getUrl(bucket, fileName).toString();
+
     }
 }
 
