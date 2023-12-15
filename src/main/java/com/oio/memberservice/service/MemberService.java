@@ -84,6 +84,7 @@ public class MemberService {
     }
 
 
+
     public MemberResponseDto getMember(String memberNickname) {
         MemberEntity resultByNickname = memberRepository.findByNickname(memberNickname).orElseThrow(
                 () -> new UsernameNotFoundException("요청하신 사용자를 찾을 수 없습니다.")
@@ -100,7 +101,6 @@ public class MemberService {
         );
         memberEntity.changePassword(passwordEncoder.encode(dto.getPassword()));
         String imgUrl = s3Service.upload(file);
-        System.out.println(imgUrl);
         memberEntity.changeProfile(imgUrl);
         memberEntity.setName(dto.getName());
         memberEntity.setNickname(dto.getNickname());
@@ -141,7 +141,7 @@ public class MemberService {
 
     public Map<String,Object> validateRefreshToken(String token,LoginDto dto) {
         Map result = new HashMap();
-        Optional<RefreshTokenEntity> refreshToken = refreshTokenRepository.findByUsername(dto.getEmail());
+        Optional<RefreshTokenEntity> refreshToken = refreshTokenRepository.findByUsername(dto.getNickname());
         if(!(refreshToken.isPresent())){
             result.put("result","fail");
             return result;

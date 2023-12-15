@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -23,9 +24,8 @@ public class ReportController {
 
     private final ReportService reportService;
 
-    @GetMapping("member/report")
-    public ResponseEntity<String> reportMember(ReportDto dto,
-                                               List<MultipartFile> photos){
+    @PostMapping(value = "member/report",consumes = "multipart/form-data")
+    public ResponseEntity<String> reportMember(@RequestPart List<MultipartFile> photos,  ReportDto dto){
 
         try {
             reportService.createReport(photos, dto);

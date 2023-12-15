@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -47,8 +48,6 @@ public class ReportService {
             String fileName = s3service.upload(photo);
             reportPhoto.updateImg(fileName);
             reportPhoto.updateReport(report);
-            System.out.println(reportPhoto.getImgUrl());
-            System.out.println(reportPhoto.getReport());
             reportPhotoRepository.save(reportPhoto);
         }
 
